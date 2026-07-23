@@ -9,6 +9,7 @@ export enum EntityNames {
   Flowers_glb = "Flowers.glb",
   ItsaVibe_glb = "ItsaVibe.glb",
   Lights_glb = "Lights.glb",
+  Panel_glb = "Panel.glb",
   Stage_glb = "Stage.glb",
   Stereo_glb_2 = "Stereo.glb_2",
   Stereo_glb_3 = "Stereo.glb_3",

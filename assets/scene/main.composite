@@ -246,6 +246,27 @@
             },
             "parent": 0
           }
+        },
+        "521": {
+          "json": {
+            "position": {
+              "x": 25,
+              "y": 0,
+              "z": 25.5
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "parent": 0
+          }
         }
       }
     },
@@ -373,6 +394,13 @@
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
+        },
+        "521": {
+          "json": {
+            "src": "assets/scene/Models/Panel/Panel.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
         }
       }
     },
@@ -433,6 +461,11 @@
           "json": {
             "value": "Stereo.glb_3"
           }
+        },
+        "521": {
+          "json": {
+            "value": "Panel.glb"
+          }
         }
       }
     },
@@ -478,7 +511,7 @@
         "serializationType": "map"
       },
       "data": {
-        "518": {
+        "521": {
           "json": {
             "gizmo": 2
           }
@@ -539,7 +572,8 @@
                   517,
                   519,
                   518,
-                  520
+                  520,
+                  521
                 ]
               },
               {
@@ -584,6 +618,10 @@
               },
               {
                 "entity": 518,
+                "children": []
+              },
+              {
+                "entity": 521,
                 "children": []
               }
             ]
@@ -633,6 +671,9 @@
           "json": {}
         },
         "520": {
+          "json": {}
+        },
+        "521": {
           "json": {}
         }
       }
