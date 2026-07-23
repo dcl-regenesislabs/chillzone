@@ -65,16 +65,16 @@
               "y": 0,
               "z": 25
             },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
             "rotation": {
               "x": 0,
               "y": 0,
               "z": 0,
               "w": 1
-            },
-            "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
             },
             "parent": 0
           }
@@ -86,11 +86,116 @@
               "y": 0,
               "z": 25
             },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
             "rotation": {
               "x": 0,
               "y": 0,
               "z": 0,
               "w": 1
+            },
+            "parent": 0
+          }
+        },
+        "514": {
+          "json": {
+            "position": {
+              "x": 25,
+              "y": 0,
+              "z": 25
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 0
+          }
+        },
+        "515": {
+          "json": {
+            "position": {
+              "x": 25,
+              "y": 0,
+              "z": 25
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 0
+          }
+        },
+        "516": {
+          "json": {
+            "position": {
+              "x": 25,
+              "y": 0,
+              "z": 25
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 0
+          }
+        },
+        "517": {
+          "json": {
+            "position": {
+              "x": 25,
+              "y": 0,
+              "z": 25
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "parent": 0
+          }
+        },
+        "518": {
+          "json": {
+            "position": {
+              "x": 14.310394287109375,
+              "y": 0.8780520558357239,
+              "z": 15.176628112792969
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.3826834261417389,
+              "z": 0,
+              "w": 0.9238795042037964
             },
             "scale": {
               "x": 1,
@@ -98,6 +203,101 @@
               "z": 1
             },
             "parent": 0
+          }
+        },
+        "519": {
+          "json": {
+            "position": {
+              "x": 36.810394287109375,
+              "y": 0.8780520558357239,
+              "z": 15.176628112792969
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.3826834261417389,
+              "z": 0,
+              "w": 0.9238795042037964
+            },
+            "parent": 0
+          }
+        },
+        "520": {
+          "json": {
+            "position": {
+              "x": 27.658729553222656,
+              "y": 0.8780520558357239,
+              "z": 36.801517486572266
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.9659258127212524,
+              "z": 0,
+              "w": 0.258819043636322
+            },
+            "parent": 0
+          }
+        }
+      }
+    },
+    {
+      "name": "core::Animator",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {},
+        "serializationType": "protocol-buffer",
+        "protocolBuffer": "PBAnimator"
+      },
+      "data": {
+        "518": {
+          "json": {
+            "states": [
+              {
+                "clip": "PlaySound",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "519": {
+          "json": {
+            "states": [
+              {
+                "clip": "PlaySound",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "520": {
+          "json": {
+            "states": [
+              {
+                "clip": "PlaySound",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
           }
         }
       }
@@ -120,7 +320,56 @@
         },
         "513": {
           "json": {
-            "src": "assets/scene/Models/Props01/Props01.glb",
+            "src": "assets/scene/Models/Stage/Stage.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "514": {
+          "json": {
+            "src": "assets/scene/Models/Lights/Lights.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "515": {
+          "json": {
+            "src": "assets/scene/Models/ItsaVibe/ItsaVibe.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "516": {
+          "json": {
+            "src": "assets/scene/Models/Flowers/Flowers.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "517": {
+          "json": {
+            "src": "assets/scene/Models/ChairsAndSofas/ChairsAndSofas.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "518": {
+          "json": {
+            "src": "assets/scene/Models/Stereo/Stereo.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "519": {
+          "json": {
+            "src": "assets/scene/Models/Stereo/Stereo.glb",
+            "visibleMeshesCollisionMask": 0,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "520": {
+          "json": {
+            "src": "assets/scene/Models/Stereo/Stereo.glb",
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
@@ -147,7 +396,42 @@
         },
         "513": {
           "json": {
-            "value": "Props01.glb"
+            "value": "Stage.glb"
+          }
+        },
+        "514": {
+          "json": {
+            "value": "Lights.glb"
+          }
+        },
+        "515": {
+          "json": {
+            "value": "ItsaVibe.glb"
+          }
+        },
+        "516": {
+          "json": {
+            "value": "Flowers.glb"
+          }
+        },
+        "517": {
+          "json": {
+            "value": "ChairsAndSofas.glb"
+          }
+        },
+        "518": {
+          "json": {
+            "value": "Stereo.glb_4"
+          }
+        },
+        "519": {
+          "json": {
+            "value": "Stereo.glb_2"
+          }
+        },
+        "520": {
+          "json": {
+            "value": "Stereo.glb_3"
           }
         }
       }
@@ -194,9 +478,9 @@
         "serializationType": "map"
       },
       "data": {
-        "513": {
+        "518": {
           "json": {
-            "gizmo": 1
+            "gizmo": 2
           }
         }
       }
@@ -248,7 +532,14 @@
                 "open": true,
                 "children": [
                   512,
-                  513
+                  513,
+                  514,
+                  515,
+                  516,
+                  517,
+                  519,
+                  518,
+                  520
                 ]
               },
               {
@@ -265,6 +556,34 @@
               },
               {
                 "entity": 513,
+                "children": []
+              },
+              {
+                "entity": 514,
+                "children": []
+              },
+              {
+                "entity": 515,
+                "children": []
+              },
+              {
+                "entity": 516,
+                "children": []
+              },
+              {
+                "entity": 517,
+                "children": []
+              },
+              {
+                "entity": 519,
+                "children": []
+              },
+              {
+                "entity": 520,
+                "children": []
+              },
+              {
+                "entity": 518,
                 "children": []
               }
             ]
@@ -293,6 +612,27 @@
           "json": {}
         },
         "513": {
+          "json": {}
+        },
+        "514": {
+          "json": {}
+        },
+        "515": {
+          "json": {}
+        },
+        "516": {
+          "json": {}
+        },
+        "517": {
+          "json": {}
+        },
+        "518": {
+          "json": {}
+        },
+        "519": {
+          "json": {}
+        },
+        "520": {
           "json": {}
         }
       }
@@ -633,14 +973,12 @@
           "json": {
             "name": "EndlessParty",
             "description": "Empty Scene Template",
+            "thumbnail": "",
             "categories": [],
             "author": "SDK",
+            "email": "",
             "tags": [],
             "layout": {
-              "base": {
-                "x": 0,
-                "y": 0
-              },
               "parcels": [
                 {
                   "x": 0,
@@ -678,8 +1016,14 @@
                   "x": 2,
                   "y": 0
                 }
-              ]
+              ],
+              "base": {
+                "x": 0,
+                "y": 0
+              }
             },
+            "silenceVoiceChat": false,
+            "disablePortableExperiences": false,
             "spawnPoints": [
               {
                 "name": "SpawnArea1",
@@ -693,8 +1037,11 @@
                     ]
                   },
                   "y": {
-                    "$case": "single",
-                    "value": 0.3400000035762787
+                    "$case": "range",
+                    "value": [
+                      0.3400000035762787,
+                      0.3400000035762787
+                    ]
                   },
                   "z": {
                     "$case": "range",
@@ -711,7 +1058,9 @@
                 }
               }
             ],
-            "skyboxConfig": {}
+            "skyboxConfig": {},
+            "creator": "",
+            "disableNearbyVoiceChat": false
           }
         }
       }
