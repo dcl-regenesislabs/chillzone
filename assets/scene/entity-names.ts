@@ -5,6 +5,7 @@
  * Object containing all entity names in the scene for autocomplete support.
  */
 export enum EntityNames {
+  Admin_Tools = "Admin Tools",
   ChairsAndSofas_glb = "ChairsAndSofas.glb",
   Flowers_glb = "Flowers.glb",
   ItsaVibe_glb = "ItsaVibe.glb",
@@ -15,4 +16,5 @@ export enum EntityNames {
   Stereo_glb_3 = "Stereo.glb_3",
   Stereo_glb_4 = "Stereo.glb_4",
   Structure01_glb = "Structure01.glb",
+  Video_Screen = "Video Screen",
 } 
