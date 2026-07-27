@@ -16,7 +16,7 @@
       "data": {
         "0": {
           "json": {
-            "adminPermissions": "PUBLIC",
+            "adminPermissions": "PRIVATE",
             "authorizedAdminUsers": {
               "me": true,
               "sceneOwners": true,
