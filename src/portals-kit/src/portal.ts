@@ -5,16 +5,13 @@ import {
   Entity,
   GltfContainer,
   GltfNodeModifiers,
-  InputAction,
   LightSource,
   Material,
-  MeshCollider,
   Schemas,
   TextShape,
   Transform,
   Tween,
-  VisibilityComponent,
-  pointerEventsSystem
+  VisibilityComponent
 } from '@dcl/sdk/ecs'
 import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 
@@ -22,13 +19,16 @@ import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 // PORTAL — ported from a fuller reference implementation (parallax vortex,
 // title/thumbnail info card, proximity door animation), simplified for this
 // project:
-// - Door open/close is a plain proximity check with hysteresis (world-cup
-//   style), not the 3-state TriggerArea + multi-avatar tracking version —
-//   triggerAreaEventsSystem isn't exported by the @dcl/ecs version pinned
-//   here, and this project already favors manual position polling over
-//   trigger events elsewhere (see index.ts's TriggerEnd handling).
-// - Activation is a click on an invisible box (like the world-cup dispenser
-//   pattern), not a walk-through trigger, for the same reason.
+// - Door open/close is a plain proximity (radius) check with hysteresis
+//   (world-cup style). Activation is a separate, tighter box check
+//   (TRIGGER_ZONE_POS/SCALE) placed right in the doorway opening, so the
+//   doors open on approach but activation only fires once the player is
+//   actually standing inside the portal, not just nearby.
+// - Neither uses the engine's 3-state TriggerArea + multi-avatar tracking
+//   system — triggerAreaEventsSystem isn't exported by the @dcl/ecs version
+//   pinned here, and this project already favors manual position polling
+//   over trigger events elsewhere. Activation resets once the player steps
+//   back out of the box, so walking through again re-triggers it.
 // - No audio (no door sound assets available) and no connected-users badge
 //   (no live data source for it here).
 // ============================================
@@ -39,7 +39,6 @@ export type PortalOptions = {
   size?: number
   name?: string
   thumbnail?: string
-  hoverText?: string
   onActivate?: () => void
 }
 
@@ -89,10 +88,14 @@ const INFO_CARD_POS = { x: 0, y: 4.55, z: -0.4 }
 const INFO_CARD_SCALE = { x: 0.85, y: 0.85, z: 1 }
 const INFO_CARD_TILT = -12 // X-rotation degrees — top leans toward the player
 
-// Clicker — invisible box over the doorway that activates the portal.
-const CLICK_POS = { x: 0, y: 1.7, z: 0.2 }
-const CLICK_SCALE = { x: 2.5, y: 3.5, z: 0.8 }
-const CLICK_MAX_DISTANCE = 16
+// Trigger area — a box in root-local space covering the doorway opening from
+// ground level up past head height, straddling the arch's z-plane. Activation
+// fires only once the player's actual position (feet-level) enters this box,
+// not just when they're nearby (that's what opens the doors, via
+// DOOR_OPEN_DIST above). Deliberately generous on y/z so a player walking
+// through at normal speed can't skip past it between engine ticks.
+const TRIGGER_ZONE_LOCAL = { x: 0, y: 1.0, z: 0.16 }
+const TRIGGER_ZONE_SCALE = { x: 2.4, y: 3.4, z: 1.2 }
 
 // ============================================
 // Proximity door system — shared across all portals
@@ -245,13 +248,17 @@ export class Portal {
   private readonly frameArrows: Entity
   private readonly doorLeft: Entity
   private readonly doorRight: Entity
-  private readonly clicker: Entity
   private readonly layers: Entity[] = []
   private readonly infoCard: Entity
   private readonly infoLabel: Entity
   private readonly thumbPlane: Entity
   private isOpen = false
+  private hasTriggered = false
   private options: PortalOptions
+  // World-space trigger box (doorway opening), recomputed in applyTransform().
+  private triggerCenter = { x: 0, y: 0, z: 0 }
+  private triggerHalfExtent = { x: 0, y: 0, z: 0 }
+  private triggerRotQ = { x: 0, y: 0, z: 0, w: 1 }
 
   constructor(options: PortalOptions) {
     this.options = options
@@ -259,7 +266,6 @@ export class Portal {
     this.portalBody = engine.addEntity()
     this.frame = engine.addEntity()
     this.frameArrows = engine.addEntity()
-    this.clicker = engine.addEntity()
     this.infoCard = engine.addEntity()
     this.infoLabel = engine.addEntity()
     this.thumbPlane = engine.addEntity()
@@ -270,11 +276,12 @@ export class Portal {
       scale: Vector3.One(),
       parent: this.portalBody
     })
-    // Visible mesh doubles as a physics collider so players can't walk through the arch.
+    // No physics collider — players can walk straight through the arch (needed for the
+    // walk-in trigger to fire at all).
     GltfContainer.create(this.frame, {
       src: FRAME_SRC,
-      visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS,
-      invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+      visibleMeshesCollisionMask: ColliderLayer.CL_NONE,
+      invisibleMeshesCollisionMask: ColliderLayer.CL_NONE
     })
 
     Transform.create(this.frameArrows, {
@@ -362,27 +369,6 @@ export class Portal {
 
     Transform.create(this.infoLabel, { position: Vector3.create(0, -0.55, 0.01), parent: this.infoCard })
 
-    // Clicker — invisible box over the doorway, activates the portal.
-    Transform.create(this.clicker, {
-      position: Vector3.create(CLICK_POS.x, CLICK_POS.y, CLICK_POS.z),
-      scale: Vector3.create(CLICK_SCALE.x, CLICK_SCALE.y, CLICK_SCALE.z),
-      parent: this.portalBody
-    })
-    MeshCollider.setBox(this.clicker, ColliderLayer.CL_POINTER)
-    if (options.onActivate) {
-      pointerEventsSystem.onPointerDown(
-        {
-          entity: this.clicker,
-          opts: {
-            button: InputAction.IA_POINTER,
-            hoverText: options.hoverText ?? 'Enter portal',
-            maxDistance: CLICK_MAX_DISTANCE
-          }
-        },
-        () => options.onActivate?.()
-      )
-    }
-
     activePortals.add(this)
     ensureProximitySystem()
 
@@ -400,8 +386,8 @@ export class Portal {
     })
     GltfContainer.create(entity, {
       src: DOOR_SRC,
-      visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS,
-      invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+      visibleMeshesCollisionMask: ColliderLayer.CL_NONE,
+      invisibleMeshesCollisionMask: ColliderLayer.CL_NONE
     })
     return entity
   }
@@ -457,6 +443,25 @@ export class Portal {
       layer.portalRotZ = rotQ.z
       layer.portalRotW = rotQ.w
     }
+
+    // Trigger box world position: TRIGGER_ZONE_LOCAL is in root-local space, scaled by
+    // `s` and rotated by the portal's rotation (root itself sits at the doorway's
+    // ground level — see the frame/portalBody offset math above).
+    const worldOffset = Vector3.rotate(
+      Vector3.create(TRIGGER_ZONE_LOCAL.x * s, TRIGGER_ZONE_LOCAL.y * s, TRIGGER_ZONE_LOCAL.z * s),
+      rotQ
+    )
+    this.triggerCenter = {
+      x: position.x + worldOffset.x,
+      y: position.y + worldOffset.y,
+      z: position.z + worldOffset.z
+    }
+    this.triggerHalfExtent = {
+      x: (TRIGGER_ZONE_SCALE.x * s) / 2,
+      y: (TRIGGER_ZONE_SCALE.y * s) / 2,
+      z: (TRIGGER_ZONE_SCALE.z * s) / 2
+    }
+    this.triggerRotQ = { x: rotQ.x, y: rotQ.y, z: rotQ.z, w: rotQ.w }
   }
 
   private applyInfo() {
@@ -497,6 +502,29 @@ export class Portal {
       this.setOpen(true)
     } else if (this.isOpen && dist >= DOOR_CLOSE_DIST) {
       this.setOpen(false)
+    }
+
+    if (this.options.onActivate) {
+      const local = rotateByInverseQuat(
+        playerPosition.x - this.triggerCenter.x,
+        playerPosition.y - this.triggerCenter.y,
+        playerPosition.z - this.triggerCenter.z,
+        this.triggerRotQ.x,
+        this.triggerRotQ.y,
+        this.triggerRotQ.z,
+        this.triggerRotQ.w
+      )
+      const inside =
+        Math.abs(local.x) <= this.triggerHalfExtent.x &&
+        Math.abs(local.y) <= this.triggerHalfExtent.y &&
+        Math.abs(local.z) <= this.triggerHalfExtent.z
+
+      if (inside && !this.hasTriggered) {
+        this.hasTriggered = true
+        this.options.onActivate()
+      } else if (!inside && this.hasTriggered) {
+        this.hasTriggered = false
+      }
     }
   }
 
