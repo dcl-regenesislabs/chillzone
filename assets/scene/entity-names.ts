@@ -12,7 +12,6 @@ export enum EntityNames {
   Laptop = "Laptop",
   Lights_glb = "Lights.glb",
   Panel_glb = "Panel.glb",
-  Plane = "Plane",
   SmartPhone = "SmartPhone",
   Stage_glb = "Stage.glb",
   Stereo_glb_2 = "Stereo.glb_2",
