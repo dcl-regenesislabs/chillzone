@@ -3,13 +3,14 @@ import { engine, pointerEventsSystem, InputAction } from '@dcl/sdk/ecs'
 import { openExternalUrl } from '~system/RestrictedActions'
 import { setupUi } from './ui'
 import { EntityNames } from '../assets/scene/entity-names'
+import { setupPortals } from './portals'
 
 
 export function main() {
     // uncomment the line below to initialize UI from ui.tsx
     //setupUi()
 
-    // your scene code here
+    setupPortals()
 
     const smartphone = engine.getEntityOrNullByName(EntityNames.SmartPhone)
     if (smartphone) {
