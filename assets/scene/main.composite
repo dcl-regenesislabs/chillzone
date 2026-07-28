@@ -309,6 +309,48 @@
             },
             "parent": 0
           }
+        },
+        "524": {
+          "json": {
+            "position": {
+              "x": 25.399999618530273,
+              "y": 0.6499999761581421,
+              "z": 26
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0.9914448857307434,
+              "z": 0,
+              "w": 0.13052618503570557
+            },
+            "scale": {
+              "x": 1.5,
+              "y": 1.5,
+              "z": 1.5
+            },
+            "parent": 0
+          }
+        },
+        "525": {
+          "json": {
+            "position": {
+              "x": 24.400001525878906,
+              "y": 0.5,
+              "z": 25.599998474121094
+            },
+            "scale": {
+              "x": 0.30000001192092896,
+              "y": 0.30000001192092896,
+              "z": 0.30000001192092896
+            },
+            "rotation": {
+              "x": 0,
+              "y": -0.7933533191680908,
+              "z": 0,
+              "w": 0.6087614297866821
+            },
+            "parent": 0
+          }
         }
       }
     },
@@ -385,6 +427,50 @@
             "states": [
               {
                 "clip": "PlaySound",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "524": {
+          "json": {
+            "states": [
+              {
+                "clip": "Action_Avatar",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              },
+              {
+                "clip": "Armature_Prop",
+                "playing": false,
+                "weight": 1,
+                "speed": 1,
+                "loop": false,
+                "shouldReset": false
+              }
+            ]
+          }
+        },
+        "525": {
+          "json": {
+            "states": [
+              {
+                "clip": "SurfMobile_Avatar",
+                "playing": true,
+                "weight": 1,
+                "speed": 1,
+                "loop": true,
+                "shouldReset": false
+              },
+              {
+                "clip": "MobileSurf_Prop",
                 "playing": true,
                 "weight": 1,
                 "speed": 1,
@@ -481,6 +567,20 @@
             "visibleMeshesCollisionMask": 0,
             "invisibleMeshesCollisionMask": 3
           }
+        },
+        "524": {
+          "json": {
+            "src": "assets/scene/Models/BringYourVibeFix_(2)_emote/BringYourVibeFix_(2)_emote.glb",
+            "visibleMeshesCollisionMask": 3,
+            "invisibleMeshesCollisionMask": 3
+          }
+        },
+        "525": {
+          "json": {
+            "src": "assets/scene/Models/MobileSurf_Emote_RegenesisLabs_(1)_emote/MobileSurf_Emote_RegenesisLabs_(1)_emote.glb",
+            "visibleMeshesCollisionMask": 3,
+            "invisibleMeshesCollisionMask": 3
+          }
         }
       }
     },
@@ -555,6 +655,45 @@
         "523": {
           "json": {
             "value": "Admin Tools"
+          }
+        },
+        "524": {
+          "json": {
+            "value": "Laptop"
+          }
+        },
+        "525": {
+          "json": {
+            "value": "SmartPhone"
+          }
+        }
+      }
+    },
+    {
+      "name": "core::PointerEvents",
+      "jsonSchema": {
+        "type": "object",
+        "properties": {},
+        "serializationType": "protocol-buffer",
+        "protocolBuffer": "PBPointerEvents"
+      },
+      "data": {
+        "524": {
+          "json": {
+            "pointerEvents": [
+              {
+                "eventType": 1,
+                "eventInfo": {
+                  "button": 0,
+                  "hoverText": "Interact",
+                  "maxDistance": 10,
+                  "showFeedback": true,
+                  "showHighlight": true,
+                  "maxPlayerDistance": 0,
+                  "priority": 0
+                }
+              }
+            ]
           }
         }
       }
@@ -712,9 +851,9 @@
         "serializationType": "map"
       },
       "data": {
-        "0": {
+        "524": {
           "json": {
-            "gizmo": 0
+            "gizmo": 1
           }
         }
       }
@@ -775,7 +914,9 @@
                   518,
                   520,
                   521,
-                  523
+                  523,
+                  524,
+                  525
                 ]
               },
               {
@@ -836,6 +977,14 @@
               {
                 "entity": 523,
                 "children": []
+              },
+              {
+                "entity": 524,
+                "children": []
+              },
+              {
+                "entity": 525,
+                "children": []
               }
             ]
           }
@@ -893,6 +1042,12 @@
           "json": {}
         },
         "523": {
+          "json": {}
+        },
+        "524": {
+          "json": {}
+        },
+        "525": {
           "json": {}
         }
       }
@@ -2097,7 +2252,7 @@
         "0": {
           "json": {
             "id": 0,
-            "value": 0
+            "value": 1
           }
         }
       }
