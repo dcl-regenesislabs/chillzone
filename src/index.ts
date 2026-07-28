@@ -1,5 +1,5 @@
 import {} from '@dcl/sdk/math'
-import { engine, pointerEventsSystem, InputAction } from '@dcl/sdk/ecs'
+import { engine, pointerEventsSystem, InputAction, PointerEvents } from '@dcl/sdk/ecs'
 import { openExternalUrl } from '~system/RestrictedActions'
 import { setupUi } from './ui'
 import { EntityNames } from '../assets/scene/entity-names'
@@ -27,13 +27,17 @@ export function main() {
 
     const laptop = engine.getEntityOrNullByName(EntityNames.Laptop)
     if (laptop) {
+        // Clear the stale declarative PointerEvents ("Interact") left by the
+        // scene editor so only the handler below is registered.
+        PointerEvents.createOrReplace(laptop, { pointerEvents: [] })
+
         pointerEventsSystem.onPointerDown(
             {
                 entity: laptop,
-                opts: { button: InputAction.IA_POINTER, hoverText: 'Connect with the Community' },
+                opts: { button: InputAction.IA_POINTER, hoverText: 'Check out whats on' },
             },
             () => {
-                openExternalUrl({ url: 'https://discord.gg/6RvBZYXFBf' })
+                openExternalUrl({ url: 'https://decentraland.org/whats-on' })
             }
         )
     }
