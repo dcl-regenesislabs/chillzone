@@ -8,3 +8,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .editor
+
+# Claude Code skills (npx skills add)
+.agents/
+.claude/
+skills-lock.json
