@@ -21,7 +21,6 @@ jobs:
         # Temporary pin: newer Node security releases trigger node-fetch v2
         # "Premature close" errors that break @dcl/sdk-commands deploys.
         node-version: 22.22.0
-        cache: npm
     - name: Install npm packages
       run: |
         if [ -f package-lock.json ]; then
