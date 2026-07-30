@@ -62,9 +62,7 @@
     "portableExperiences": "enabled",
     "nearbyVoiceChat": "enabled"
   },
-   "worldConfiguration": {
-    "name": "yiffer.dcl.eth"
-  },
+  
   "creator": "",
   "skyboxConfig": {},
   "worldConfiguration": {
