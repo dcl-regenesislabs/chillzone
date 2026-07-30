@@ -20,7 +20,6 @@ const portal = new Portal({
   size: 1.4,
   name: 'Cozy Farm',                       // info card title
   thumbnail: 'assets/images/CozyFarm.png', // info card image
-  hoverText: 'Go to Cozy Farm',
   onActivate: () => {
     void changeRealm({ realm: 'cozyfarm.dcl.eth', message: 'Jump to cozyfarm.dcl.eth?' })
   }
@@ -41,8 +40,13 @@ portal.setVisible(true | false)
    pattern, create portals only on the client branch.
 4. **`changeRealm` needs no scene.json permission** — it shows the player a
    confirmation dialog with your `message`.
-5. **Physics colliders**: frame and doors block walking through. Activation is
-   a click on the door (hover text), not walk-through.
+5. **No physics colliders**: frame and doors are pure visuals (`CL_NONE`) so
+   players can walk straight through — required for the walk-in trigger to
+   ever fire. Doors open on approach (`DOOR_OPEN_DIST`, 5m) but activation
+   only fires once the player's actual position enters the doorway box
+   (`TRIGGER_ZONE_LOCAL`/`TRIGGER_ZONE_SCALE`, ground level up past head
+   height) — no click required. It resets once the player steps back out, so
+   walking through again re-triggers it.
 6. **Recent SDK7 required**: uses `GltfNodeModifiers`, `LightSource`, `Tween`,
    `TextShape`.
 7. Doors auto-open at 5m and close at 6.5m (`DOOR_OPEN_DIST` / `DOOR_CLOSE_DIST`).

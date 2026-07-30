@@ -40,7 +40,6 @@ export function setupPortals(): Portal[] {
         size: 1.4,
         name: dest.name,
         thumbnail: dest.thumbnail,
-        hoverText: `Go to ${dest.name}`,
         onActivate: () => {
           void changeRealm({ realm: dest.realm, message: `Jump to ${dest.name}?` })
         }
