@@ -1,5 +1,4 @@
 import { ColliderLayer, EasingFunction, engine, Entity, getWorldPosition, GltfContainer, InputAction, inputSystem, Material, MaterialTransparencyMode, MeshCollider, MeshRenderer, pointerEventsSystem, PointerEventType, Schemas, timers, Transform, TransformTypeWithOptionals, Tween, VisibilityComponent } from "@dcl/sdk/ecs"
-import { openExternalUrl } from "~system/RestrictedActions"
 import { Color3, Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { BOARD_HEIGHT, BOARD_WIDTH, LIVE_CARD_WIDTH, PAGING_DOT_SPACING, CAMERA_DISTANCE, EVENT_BOARD_TYPE, UPCOMING_OFFSET, LIVE_BOARD_SCROLL_INTERVAL, UPCOMING_BOARD_SCROLL_INTERVAL, CAMERA_TRANSITION_TIME, CALENDAR_BOARD_SCROLL_INTERVAL, LIVE_BOARD_AUTO_UPDATE_INTERVAL, LIVE_CAMERA_Y, LIVE_ACTIVE_POS_Y, TITLE_MODEL_LIVE, TITLE_MODEL_UPCOMING, TITLE_MODEL_PIVOT_COMPENSATION } from "./config"
 import { SpriteAnimSystem } from "./deps/spriteAnimator"
@@ -7,7 +6,7 @@ import { addCamera, enterCinematicMode, exitCinematicMode, lockPlayer } from "./
 import { CAMERA_TYPE } from "./deps/cameraConfig"
 import { EventsService } from "./api/apiService"
 import { addLiveEventCard, setDescriptionPanel, updateLiveEventCard } from "./liveEventCard"
-import { lineAnimatorSystem, scaleTween } from "./boardFunctions"
+import { lineAnimatorSystem, scaleTween, clickTeleportToEvent } from "./boardFunctions"
 import { addCloseButton } from "./closeButton"
 import { addPageContainer, ContainerInfo } from "./pageContainer"
 import { addUpcomingEventCard, setDescriptionPanelUpcoming, updateUpcomingEventCard, UpcomingEventCardInfo } from "./upcomingEventCard"
@@ -38,7 +37,6 @@ const SavedEventSchema = Schemas.Map({
     world: Schemas.Boolean,
     server: Schemas.String,
     detailText: Schemas.String,
-    url: Schemas.String,
 })
 
 
@@ -298,13 +296,18 @@ export async function initLiveEventBoard(
             }
         },
         (e) => {
-            // Mobile workaround: the focus/cinematic mode (startEventInteraction)
-            // renders poorly on the mobile client, so instead we open the currently
-            // shown event's jump link (teleports into the event's scene) externally.
+            // Same behaviour as the portals: jump straight into the currently shown
+            // event's scene — changeRealm for Worlds, teleportTo for Genesis City
+            // parcels (clickTeleportToEvent handles both). No focus/cinematic mode,
+            // which renders poorly on mobile.
             const info = EventBoardInfo.get(eventBoardRoot)
             const current = info.savedEvents[info.currentPageIndex]
-            if (current && current.url) {
-                void openExternalUrl({ url: current.url })
+            if (current) {
+                clickTeleportToEvent({
+                    coordinates: [current.coordinateX, current.coordinateZ],
+                    world: current.world,
+                    server: current.server
+                })
             }
         }
     )
@@ -597,7 +600,6 @@ export async function initLiveEventBoard(
                 world: event.world,
                 server: event.server ? event.server : "",
                 detailText: event.description,
-                url: event.url, // API jump link → teleports straight into the event's scene
             })
         }
         
@@ -614,7 +616,6 @@ export async function initLiveEventBoard(
                 world: false,
                 server: entry.url,
                 detailText: entry.description,
-                url: entry.url,
             })
             
         }
@@ -767,7 +768,6 @@ export async function updateLiveEvents(eventBoardEntity: Entity) {
                 world: event.world,
                 server: event.server ? event.server : "",
                 detailText: event.description,
-                url: event.url, // API jump link → teleports straight into the event's scene
             })
         }       
     
