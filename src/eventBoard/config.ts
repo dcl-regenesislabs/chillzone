@@ -185,5 +185,4 @@ export type EventShortInfo = {
     world: boolean
     server: string,
     detailText: string
-    url?: string
 }
