@@ -1,5 +1,5 @@
 import { Vector3, Quaternion } from '@dcl/sdk/math'
-import { engine, pointerEventsSystem, InputAction, PointerEvents, GltfContainer, Transform, MeshRenderer, Material } from '@dcl/sdk/ecs'
+import { engine, pointerEventsSystem, InputAction, PointerEvents, GltfContainer, Transform, MeshRenderer, Material, SkyboxTime } from '@dcl/sdk/ecs'
 import { openExternalUrl } from '~system/RestrictedActions'
 import { EntityNames } from '../assets/scene/entity-names'
 import { setupPortals } from './portals'
@@ -11,6 +11,9 @@ import { setupSceneUi } from './sceneUi'
 
 
 export function main() {
+    // Keep the scene skybox pinned to midday even if the realm tries to override it.
+    SkyboxTime.createOrReplace(engine.RootEntity, { fixedTime: 43200 })
+
     setupPortals()
 
     initInteractionSystem()

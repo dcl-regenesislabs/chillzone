@@ -62,9 +62,10 @@
     "portableExperiences": "enabled",
     "nearbyVoiceChat": "enabled"
   },
-  
   "creator": "",
-  "skyboxConfig": {},
+  "skyboxConfig": {
+    "fixedTime": 43200
+  },
   "worldConfiguration": {
     "name": "chillzone.dcl.eth"
   },
