@@ -30,7 +30,17 @@ export function main() {
     // wearable-dispenser claim overlay (composed in sceneUi.tsx).
     setupSceneUi()
 
-    // Spinning claimable laptop only — the base is placed from the scene editor.
+    // Dispenser base. Was an editor entity ('dispenser_1'); recreated in code so it
+    // survives merges with main's scene edits. Static (no animation), matching the editor.
+    const dispenserBase = engine.addEntity()
+    Transform.create(dispenserBase, {
+        position: Vector3.create(43.42067231508288, 0.9208523970248381, 4.538772986874858),
+        rotation: Quaternion.fromEulerDegrees(0, 0, 0),
+        scale: Vector3.create(0.8, 0.8, 0.8)
+    })
+    GltfContainer.create(dispenserBase, { src: 'models/dispenser_1.glb', visibleMeshesCollisionMask: 3 })
+
+    // Spinning claimable emote on top (base above is placed separately).
     createDispenser({
         position: { x: 37.232, y: 0.532, z: 21.763 },
         rotation: { x: 0, y: 180, z: 0 },
