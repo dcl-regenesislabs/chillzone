@@ -5,10 +5,15 @@ import { openExternalUrl } from '~system/RestrictedActions'
 import { EntityNames } from '../assets/scene/entity-names'
 import { setupPortals } from './portals'
 import { initEventBoard, createCinematicUI, EVENT_BOARD_TYPE } from './eventBoard'
+import { initInteractionSystem } from './sitting/interactiveObject'
+import { setupChairsAndSofasSitting } from './sitting/setupChairsAndSofas'
 
 
 export function main() {
     setupPortals()
+
+    initInteractionSystem()
+    setupChairsAndSofasSitting()
 
     // Live events board (fetches events.decentraland.org). Needs ~12m clear in front.
     initEventBoard(

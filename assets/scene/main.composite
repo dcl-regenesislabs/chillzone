@@ -167,19 +167,19 @@
           "json": {
             "position": {
               "x": 25,
-              "y": 0,
+              "y": 0.10000000149011612,
               "z": 25
-            },
-            "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
             },
             "rotation": {
               "x": 0,
               "y": 0,
               "z": 0,
               "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
             },
             "parent": 0
           }
@@ -851,7 +851,7 @@
         "serializationType": "map"
       },
       "data": {
-        "522": {
+        "517": {
           "json": {
             "gizmo": 0
           }
@@ -933,7 +933,6 @@
               },
               {
                 "entity": 513,
-                "open": true,
                 "children": [
                   522
                 ]
