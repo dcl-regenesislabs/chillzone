@@ -38,7 +38,7 @@ export function main() {
         rotation: Quaternion.fromEulerDegrees(0, 0, 0),
         scale: Vector3.create(0.8, 0.8, 0.8)
     })
-    GltfContainer.create(dispenserBase, { src: 'models/dispenser_1.glb', visibleMeshesCollisionMask: 3 })
+    GltfContainer.create(dispenserBase, { src: 'wearableDispenser/models/dispenser_1.glb', visibleMeshesCollisionMask: 3 })
 
     // Spinning claimable emote on top (base above is placed separately).
     createDispenser({
