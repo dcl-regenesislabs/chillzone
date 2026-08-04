@@ -104,10 +104,10 @@ export function main() {
         pointerEventsSystem.onPointerDown(
             {
                 entity: laptop,
-                opts: { button: InputAction.IA_POINTER, hoverText: 'Check out whats on' },
+                opts: { button: InputAction.IA_POINTER, hoverText: 'Join Decentraland Discord' },
             },
             () => {
-                openExternalUrl({ url: 'https://decentraland.org/whats-on' })
+                openExternalUrl({ url: 'https://discord.gg/decentraland' })
             }
         )
     }
