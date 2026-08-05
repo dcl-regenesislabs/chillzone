@@ -4,6 +4,7 @@ import { isMobile } from "@dcl/sdk/platform"
 import { EntityNames } from "../../assets/scene/entity-names"
 import { addCustomInteraction } from "./animationActions"
 import { getAnimTypeByName } from "./interactionTypes"
+import { initSeatState } from "./seatState"
 import { delay_ms_cb } from "./sittingUtils"
 
 // pullBack: shifts the seat backward along its own local Z (cancels forward teleportOffset push)
@@ -57,6 +58,8 @@ const CHAIR_SEATS: SeatPivot[] = [
     { position: Vector3.create(2.399994, 0.679352, 6.950022), rotation: Quaternion.create(0, -0.990596, 0, 0.136820) },
 ]
 
+const SEAT_SYNC_ID_BASE = 6000
+
 function createSeatAnchor(parent: Entity, seat: SeatPivot): Entity {
     const anchor = engine.addEntity()
     const localOffset = Vector3.create(seat.sideShift ?? 0, 0, -(seat.pullBack ?? 0))
@@ -75,14 +78,16 @@ export function setupChairsAndSofasSitting() {
     // while someone is seated (it's all one combined glb, can't toggle a
     // single cushion) — trade-off accepted to stop physics from resettling
     // the avatar against the seat's real collider after teleporting.
-    SOFA_SEATS.forEach((seat) => {
+    SOFA_SEATS.forEach((seat, index) => {
         const anchor = createSeatAnchor(furniture, seat)
-        addCustomInteraction(anchor, getAnimTypeByName("anim_spot_sofa")!, true, false, () => { }, furniture)
+        const { spot } = addCustomInteraction(anchor, getAnimTypeByName("anim_spot_sofa")!, true, false, () => { }, furniture)
+        initSeatState(spot, SEAT_SYNC_ID_BASE + index)
     })
 
-    CHAIR_SEATS.forEach((seat) => {
+    CHAIR_SEATS.forEach((seat, index) => {
         const anchor = createSeatAnchor(furniture, seat)
-        addCustomInteraction(anchor, getAnimTypeByName("anim_spot_chair")!, true, false, () => { }, furniture)
+        const { spot } = addCustomInteraction(anchor, getAnimTypeByName("anim_spot_chair")!, true, false, () => { }, furniture)
+        initSeatState(spot, SEAT_SYNC_ID_BASE + SOFA_SEATS.length + index)
     })
 
     // Mobile-only: lower the actual furniture model 0.15 on Y, done AFTER
