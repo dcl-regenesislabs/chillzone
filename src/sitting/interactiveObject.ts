@@ -1,11 +1,13 @@
-import { ColliderLayer, engine, Entity, GltfContainer, InputAction, inputSystem, PointerEvents, pointerEventsSystem, PointerEventType, Schemas, Transform, VisibilityComponent } from "@dcl/sdk/ecs"
+import { ColliderLayer, engine, Entity, GltfContainer, InputAction, inputSystem, MeshCollider, PointerEvents, pointerEventsSystem, PointerEventType, Schemas, Transform, VisibilityComponent } from "@dcl/sdk/ecs"
 import { Vector3 } from "@dcl/sdk/math"
 import { isMobile } from "@dcl/sdk/platform"
+import { getPlayer } from "@dcl/sdk/players"
 import { movePlayerTo, triggerEmote, triggerSceneEmote } from "~system/RestrictedActions"
 import { InteractionData, preLoadAnimations } from "./interactionTypes"
 import { compareDistance, delay_ms_cb, realDistance } from "./sittingUtils"
 import { addInteractionHighlights, getHighlightFromPool, hideActiveHover, hideInteractionHighlights, setActiveHover, setInteractionHighlight, showInteractionHighlight } from "./interactionHighlight"
 import { movementAll, movementEmoteOnly } from "./playerMovement"
+import { occupySeat, releaseSeat, SeatState } from "./seatState"
 
 let objectInteractionActive = false
 
@@ -64,13 +66,38 @@ function switchVisibilityOn(entity: Entity) {
 
 let lastObjectInteractionEntity: Entity | null = null
 
+function setSeatClickability(clickBox: Entity, clickable: boolean) {
+    MeshCollider.getMutable(clickBox).collisionMask = clickable ? ColliderLayer.CL_POINTER : ColliderLayer.CL_NONE
+}
+
+function syncSeatAvailability(entity: Entity, taken: boolean, clickBox: Entity) {
+    const mutableObject = InteractiveObject.getMutable(entity)
+    if (mutableObject.taken !== taken) {
+        mutableObject.taken = taken
+        if (taken) {
+            hideActiveHover()
+        }
+    }
+
+    const targetMask = taken ? ColliderLayer.CL_NONE : ColliderLayer.CL_POINTER
+    if (MeshCollider.get(clickBox).collisionMask !== targetMask) {
+        setSeatClickability(clickBox, !taken)
+    }
+}
+
 function startInteraction(entity: Entity) {
     movementEmoteOnly()
 
     const objInfo = InteractiveObject.get(entity)
+    const seatState = SeatState.getOrNull(entity)
+    if (seatState?.taken) return
+
     switchColliderOff(entity)
 
+    const occupantUserId = getPlayer()?.userId ?? ''
+    occupySeat(entity, occupantUserId)
     InteractiveObject.getMutable(entity).taken = true
+    setSeatClickability(objInfo.clickBox, false)
     hideInteractionHighlights()
     hideActiveHover()
 
@@ -122,8 +149,15 @@ export function stopInteraction() {
     showInteractionHighlight()
 
     if (lastObjectInteractionEntity !== null) {
+        releaseSeat(lastObjectInteractionEntity)
+        if (InteractiveObject.has(lastObjectInteractionEntity)) {
+            const objInfo = InteractiveObject.get(lastObjectInteractionEntity)
+            InteractiveObject.getMutable(lastObjectInteractionEntity).taken = false
+            setSeatClickability(objInfo.clickBox, true)
+        }
         switchColliderOn(lastObjectInteractionEntity)
         switchVisibilityOn(lastObjectInteractionEntity)
+        lastObjectInteractionEntity = null
     }
 }
 
@@ -133,8 +167,15 @@ export function InteractionSystem() {
     let closestSpots: Entity[] = []
     const maxDistance = 10
 
+    if (!isPlayerInteractingWithObjects()) {
+        hideInteractionHighlights()
+    }
+
     for (const [entity, objInfo, transform] of interactiveObjects) {
-        if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN, objInfo.clickBox)) {
+        const taken = SeatState.getOrNull(entity)?.taken ?? objInfo.taken
+        syncSeatAvailability(entity, taken, objInfo.clickBox)
+
+        if (!taken && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN, objInfo.clickBox)) {
             if (!isPlayerInteractingWithObjects()) {
                 startInteraction(entity)
             } else {
@@ -142,11 +183,15 @@ export function InteractionSystem() {
                 startInteraction(entity)
             }
         }
-        if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, objInfo.clickBox) && !isPlayerInteractingWithObjects()) {
+        if (!taken && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_ENTER, objInfo.clickBox) && !isPlayerInteractingWithObjects()) {
             setActiveHover(Transform.get(objInfo.clickBox).position)
         }
         if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_HOVER_LEAVE, objInfo.clickBox)) {
             hideActiveHover()
+        }
+
+        if (taken) {
+            continue
         }
 
         const distance = realDistance(Transform.get(engine.PlayerEntity).position, transform.position)
